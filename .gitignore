@@ -1,0 +1,10 @@
+__pycache__/ 
+*.py[cod] 
+.vscode/ 
+.idea/ 
+.env 
+.aws/ 
+*.pem 
+venv/ 
+.pytest_cache/ 
+.coverage 
