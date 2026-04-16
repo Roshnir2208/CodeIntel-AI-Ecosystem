@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CodeIntel - Multi-Modal Code Analysis AI Ecosystem'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, staging, prod]
+
+Resources:
+  ModelArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'codeintel-artifacts-${AWS::AccountId}'
+      VersioningConfiguration:
+        Status: Enabled
+
+  PredictionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CodeIntel-Predictions
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: prediction_id
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: prediction_id
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      TTL:
+        AttributeName: ttl
+        Enabled: true
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: SageMakerAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'sagemaker:InvokeEndpoint'
+                Resource: '*'
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:Query'
+                Resource: !GetAtt PredictionsTable.Arn
+        - PolicyName: CloudWatchAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'cloudwatch:PutMetricData'
+                Resource: '*'
+
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/codeintel-api-handler
+      RetentionInDays: 30
+
+Outputs:
+  DynamoDBTable:
+    Value: !Ref PredictionsTable
+  ModelBucket:
+    Value: !Ref ModelArtifactsBucket
+  LambdaRoleArn:
+    Value: !GetAtt LambdaExecutionRole.Arn
