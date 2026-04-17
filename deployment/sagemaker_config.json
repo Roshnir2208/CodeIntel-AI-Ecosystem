@@ -1,0 +1,23 @@
+{
+  "endpoint_name": "codeintel-completion-endpoint",
+  "instance_type": "ml.m5.large",
+  "initial_instance_count": 1,
+  "autoscaling": {
+    "min_capacity": 1,
+    "max_capacity": 4,
+    "target_invocations_per_instance": 50,
+    "scale_in_cooldown_seconds": 120,
+    "scale_out_cooldown_seconds": 60
+  },
+  "cloudwatch_alarms": {
+    "latency_p95_ms_threshold": 1500,
+    "error_rate_percent_threshold": 5,
+    "invocation_spike_threshold": 200
+  },
+  "cost_optimization": {
+    "enable_auto_scaling": true,
+    "use_managed_spot_training": false,
+    "estimated_cost_per_1000_requests_usd": 0.25,
+    "scale_to_minimum_after_idle_minutes": 15
+  }
+}
