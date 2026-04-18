@@ -1,0 +1,37 @@
+[
+  {
+    "request": 3,
+    "latency_ms": 5.502223968505859,
+    "status": 200
+  },
+  {
+    "request": 4,
+    "latency_ms": 6.560802459716797,
+    "status": 200
+  },
+  {
+    "request": 5,
+    "latency_ms": 5.960941314697266,
+    "status": 200
+  },
+  {
+    "request": 6,
+    "latency_ms": 5.537986755371094,
+    "status": 200
+  },
+  {
+    "request": 7,
+    "latency_ms": 5.957126617431641,
+    "status": 200
+  },
+  {
+    "request": 8,
+    "latency_ms": 8.190155029296875,
+    "status": 200
+  },
+  {
+    "request": 9,
+    "latency_ms": 6.512880325317383,
+    "status": 200
+  }
+]
