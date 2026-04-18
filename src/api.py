@@ -11,8 +11,8 @@ from typing import Any, Callable, Deque, Dict, Tuple
 
 from flask import Flask, Response, jsonify, request
 
-from src.model import ModelManager
-from src.monitoring import MonitoringSystem
+from model import ModelManager
+from monitoring import MonitoringSystem
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
