@@ -108,8 +108,12 @@ def create_app(
             payload = request.get_json(silent=True) or {}
             code = payload.get("code", "")
             max_new_tokens = int(payload.get("max_new_tokens", 64))
-            result = model_manager.complete(code=code, max_new_tokens=max_new_tokens)
-            monitor.record_request(result["latency_ms"], success=True)
+            request_wrapper = getattr(monitor, "request_metrics_decorator", None)
+            if callable(request_wrapper):
+                result = request_wrapper(model_manager.complete)(code=code, max_new_tokens=max_new_tokens)
+            else:
+                result = model_manager.complete(code=code, max_new_tokens=max_new_tokens)
+                monitor.record_request(result["latency_ms"], success=True)
             monitor.publish_cloudwatch_metrics()
             return jsonify(result), 200
         except ValueError as exc:

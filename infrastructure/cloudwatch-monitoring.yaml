@@ -1,0 +1,193 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudWatch monitoring, alarms, dashboard, and SNS notifications for CodeIntel API
+
+Parameters:
+  Namespace:
+    Type: String
+    Default: CodeIntelAPI
+    Description: CloudWatch namespace used by the API metrics publisher
+  AlertEmail:
+    Type: String
+    Description: Email address that receives critical alarm notifications
+  AlarmPeriodSeconds:
+    Type: Number
+    Default: 60
+    AllowedValues: [60, 120, 300]
+    Description: Alarm evaluation period in seconds
+  LowRequestThresholdPerMinute:
+    Type: Number
+    Default: 1
+    Description: Alarm if requests/minute drops below this threshold
+
+Resources:
+  MonitoringAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: codeintel-monitoring-alerts
+
+  MonitoringAlertsEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref MonitoringAlertsTopic
+      Protocol: email
+      Endpoint: !Ref AlertEmail
+
+  MonitoringDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: CodeIntel-API
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "title": "Latency (p50/p95/p99)",
+                "view": "timeSeries",
+                "stat": "Average",
+                "region": "${AWS::Region}",
+                "metrics": [
+                  ["${Namespace}", "LatencyP50"],
+                  [".", "LatencyP95"],
+                  [".", "LatencyP99"],
+                  [".", "LatencyAvg"]
+                ]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "title": "Requests & Error Rate",
+                "view": "timeSeries",
+                "stat": "Average",
+                "region": "${AWS::Region}",
+                "metrics": [
+                  ["${Namespace}", "RequestCount"],
+                  [".", "ErrorRate"]
+                ]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 6,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "title": "Cache Hit/Miss Rate",
+                "view": "timeSeries",
+                "stat": "Average",
+                "region": "${AWS::Region}",
+                "metrics": [
+                  ["${Namespace}", "CacheHitRate"],
+                  [".", "CacheMissRate"]
+                ]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 6,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "title": "Throughput",
+                "view": "timeSeries",
+                "stat": "Average",
+                "region": "${AWS::Region}",
+                "metrics": [
+                  ["${Namespace}", "ThroughputRPS"],
+                  [".", "RequestsPerMinute"]
+                ]
+              }
+            }
+          ]
+        }
+
+  HighAverageLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: CodeIntel-High-Latency
+      AlarmDescription: Alarm when average latency is above 500 ms
+      Namespace: !Ref Namespace
+      MetricName: LatencyAvg
+      Statistic: Average
+      Period: !Ref AlarmPeriodSeconds
+      EvaluationPeriods: 1
+      Threshold: 500
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref MonitoringAlertsTopic
+      OKActions:
+        - !Ref MonitoringAlertsTopic
+
+  HighErrorRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: CodeIntel-High-Error-Rate
+      AlarmDescription: Alarm when API error rate is above 5 percent
+      Namespace: !Ref Namespace
+      MetricName: ErrorRate
+      Statistic: Average
+      Period: !Ref AlarmPeriodSeconds
+      EvaluationPeriods: 1
+      Threshold: 5
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref MonitoringAlertsTopic
+      OKActions:
+        - !Ref MonitoringAlertsTopic
+
+  LowRequestRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: CodeIntel-Low-Request-Rate
+      AlarmDescription: Alarm when requests per minute drop below threshold or no data is reported
+      Namespace: !Ref Namespace
+      MetricName: RequestsPerMinute
+      Statistic: Average
+      Period: !Ref AlarmPeriodSeconds
+      EvaluationPeriods: 1
+      Threshold: !Ref LowRequestThresholdPerMinute
+      ComparisonOperator: LessThanThreshold
+      TreatMissingData: breaching
+      AlarmActions:
+        - !Ref MonitoringAlertsTopic
+      OKActions:
+        - !Ref MonitoringAlertsTopic
+
+  HighCacheMissRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: CodeIntel-High-Cache-Miss-Rate
+      AlarmDescription: Alarm when cache miss rate is above 50 percent
+      Namespace: !Ref Namespace
+      MetricName: CacheMissRate
+      Statistic: Average
+      Period: !Ref AlarmPeriodSeconds
+      EvaluationPeriods: 1
+      Threshold: 50
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref MonitoringAlertsTopic
+      OKActions:
+        - !Ref MonitoringAlertsTopic
+
+Outputs:
+  DashboardName:
+    Description: CloudWatch dashboard name
+    Value: !Ref MonitoringDashboard
+  AlertsTopicArn:
+    Description: SNS topic ARN for monitoring notifications
+    Value: !Ref MonitoringAlertsTopic
