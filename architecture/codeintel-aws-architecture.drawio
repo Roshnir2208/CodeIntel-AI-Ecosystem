@@ -1,0 +1,97 @@
+<mxfile host="app.diagrams.net" modified="2026-04-20T20:40:00.000Z" agent="Copilot" version="24.7.12" type="device">
+  <diagram id="aws-arch" name="CodeIntel AWS Architecture">
+    <mxGraphModel dx="1612" dy="980" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="region" value="AWS Region: us-east-1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;dashed=1;fillColor=#f5f5f5;" vertex="1" parent="1">
+          <mxGeometry x="180" y="40" width="1540" height="920" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="legend" value="Legend" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1450" y="70" width="250" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="legendBlue" value="Blue: Data Flow" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#1a73e8;fillColor=#e8f0fe;fontColor=#1a73e8;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="110" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="legendRed" value="Red: Alerts" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#d93025;fillColor=#fce8e6;fontColor=#d93025;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="150" width="220" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="client" value="Client" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#333333;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="120" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="vpc" value="VPC" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#666666;dashed=1;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="220" y="130" width="860" height="760" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="publicSubnet" value="Public Subnet" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#999999;fillColor=#f8fbff;" vertex="1" parent="1">
+          <mxGeometry x="250" y="180" width="400" height="670" as="geometry"/>
+        </mxCell>
+        <mxCell id="privateSubnet" value="Private Subnet" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#999999;fillColor=#f8fff8;" vertex="1" parent="1">
+          <mxGeometry x="680" y="180" width="370" height="670" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="codepipeline" value="CodePipeline CICD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#b26a00;" vertex="1" parent="1">
+          <mxGeometry x="300" y="230" width="290" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="apigw" value="API Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#b26a00;" vertex="1" parent="1">
+          <mxGeometry x="300" y="360" width="290" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="sagemaker" value="SageMaker Notebook&#xa;(Flask API)&#xa;/api/complete&#xa;/api/health&#xa;/api/metrics" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=10;fillColor=#fff3e0;strokeColor=#b26a00;" vertex="1" parent="1">
+          <mxGeometry x="730" y="250" width="270" height="150" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cwDashboard" value="CloudWatch Dashboard&#xa;(4 Widgets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#b26a00;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="250" width="280" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="cwMetrics" value="CloudWatch Metrics&#xa;Latency, Throughput, Cache Hit, CPU, Memory, Request Count, Model Load, Failures" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=10;fillColor=#fff3e0;strokeColor=#b26a00;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="370" width="560" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="cwAlarms" value="CloudWatch Alarms&#xa;Latency &gt; 500ms&#xa;Error Rate &gt; 5%&#xa;CPU &gt; 80%&#xa;Throughput &lt; 50 req/s" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=10;fillColor=#fff3e0;strokeColor=#b26a00;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="520" width="280" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="sns" value="SNS Topic&#xa;codeintel-monitoring-alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#b26a00;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="680" width="280" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="email" value="Email Subscriber" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#b26a00;" vertex="1" parent="1">
+          <mxGeometry x="1450" y="680" width="230" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="logs" value="CloudWatch Logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#b26a00;" vertex="1" parent="1">
+          <mxGeometry x="730" y="470" width="270" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e1" value="API request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1a73e8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="client" target="apigw">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="Deploy pipeline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1a73e8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="codepipeline" target="apigw">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="Invoke Flask API" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1a73e8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="apigw" target="sagemaker">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="Publish metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1a73e8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="sagemaker" target="cwMetrics">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="Dashboard queries" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1a73e8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="cwMetrics" target="cwDashboard">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" value="Alarm evaluation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1a73e8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="cwMetrics" target="cwAlarms">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="Alarm notifications" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d93025;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="cwAlarms" target="sns">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" value="Email alert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d93025;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="sns" target="email">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" value="Application logs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1a73e8;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="sagemaker" target="logs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
